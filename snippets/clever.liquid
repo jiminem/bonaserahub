@@ -1,0 +1,186 @@
+<script id = "cleverscript" >
+
+    var cleveroptionindex = '';
+    var cleverimages = {{product.metafields.clever["cleverimages"] | json}};
+    // var cleveroptionindex = {{product.metafields.clever["cleveroptionindex"]}};
+    {% if product.metafields.clever["cleveroptionindex"] != blank %}
+    var cleveroptionindex = {{product.metafields.clever["cleveroptionindex"]}};
+    {% endif %}
+    var cleverproduct = {{product | json}};
+    var clevervariants = cleverproduct.variants;
+    var productimageswitcher =  {{product.metafields.clever['is_clever_on'] | json}};
+    var appimageswitcher = {{shop.metafields.clever['is_image_switcher_on'] | json}};
+
+    var imagesjson = {{product.images | json}};
+    var cleverproductimages = [];
+    var productid = {{product.id}};
+
+
+
+    {% assign i = 0 %}
+    {% for image in product.images %}
+    cleverproductimages[{{i}}] = [];
+    cleverproductimages[{{i}}]['src'] = imagesjson[{{i}}];
+    cleverproductimages[{{i}}]['id'] = {{image.id}};
+    {% assign i = i | plus:1 %}
+    {% endfor %}
+
+
+    if(cleverimages == null){
+
+        cleverimages=0;
+    }
+
+    if(cleveroptionindex == ''){
+
+        cleveroptionindex = 0;
+    }
+
+    var originalhtml;
+    var originalhtmlThumb;
+
+    var slideoption;
+    var slideoptionMain;
+
+    var wholeHtml = '';
+    var variantimagesArray = [];
+document.addEventListener('DOMContentLoaded', function(event) {
+   
+
+    if( appimageswitcher==1 && productimageswitcher == 1 ) {
+
+        setTimeout(function() {
+
+
+
+var isMobile =/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            var initval ='';
+                    for (var i = 0; i < 4; i++) {
+                        
+                        setTimeout(function() {
+                            if(initval == 'set'){
+
+                                        
+                            return false;
+                            }
+
+                            cleverMapper();
+
+                        }, i * 1000);
+
+                    }
+                    var thumb = $('.gt_product-carousel .item').clone();
+
+                    $(document).on("click", ".gt_flex .gt_swatches--select", function() {
+                       
+                        cleverMapper();
+                            
+                    });
+                    $(document).on("click", ".owl-item img", function(e) {
+                        
+                        e.preventDefault();
+                        $('.owl-item img').removeClass('gt_active');
+                        $(this).attr('class','gt_active');
+
+                        thumbsrc = $(this).attr('src').replace('_652x','');
+
+                        $('.gt_product-img').find('img').attr('src',thumbsrc);
+                        
+                        //console.log(src);
+                        $('.gt_product-img').find('.gt_product-zoom').css('background-image', 'url('+thumbsrc+')');
+                        var src = $('.gt_product-img').find('img').attr('src').replace('_100x','');
+                    });
+
+        
+                    function  cleverMapper() {
+                          
+                        var found = 0;
+                        var fvalue = [];
+                        var foptionMap = [];
+                        var nvalue = [];
+                        var noptionMap = [];
+                        var available = false;
+                        var optionMap = [];
+                    
+                       
+                        $(".gt_flex .gt_swatches--select.gt_active").each(function(key) {
+                            optionMap[key] = $(this).attr('data-value').replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '');
+
+                        });
+
+                       
+
+                        var variantimagesArray = [];
+                        var variantimagesArrayref = [];
+                        
+                        if (1) {
+
+                            if (1) {
+                                    if (cleverimages[optionMap[cleveroptionindex]] != undefined) {
+                                    
+                                        while (variantimagesArray.length > 0) {
+                                            variantimagesArray.pop();
+                                        }
+                                    
+                                        variantimagesArrayref =  cleverimages[optionMap[cleveroptionindex]];
+                                    }
+
+                                    variantimagesArray = $.merge( $.merge( [], variantimagesArrayref ),cleverimages['CleverCommon']);
+
+                                        //    firstimage = variantimagesArray[0].toString();
+
+                                    
+
+                                     $(".gt_product-carousel").owlCarousel("destroy");
+                                     $(".gt_product-carousel").html(thumb);
+                        
+                                   
+                                    
+
+                                $('.gt_product-carousel .item').each(function(i, obj) {
+
+                                    imageid = $(this).find('img').attr('data-id');
+
+                                    imageid = imageid.toString();
+                                    
+                                    if ($.inArray(imageid, variantimagesArray) !== -1) {
+                                       
+                                    } else {
+
+                                        $(this).remove();
+                                    }
+
+                                });
+
+                                if(isMobile){
+                                    dot = true;
+                                    item = 1;
+                                }else{
+                                    dot = false;
+                                    item = 4
+                                }
+
+                                $('.gt_product-carousel').owlCarousel({
+
+                                    items: item,
+                                    loop: false,
+                                    autoplay: false,
+                                    nav: false,
+                                    dots: dot,
+
+                                });
+
+                                $('.owl-item img:first').trigger('click');
+
+                
+                            }
+                        }      
+                
+                        initval ='set';
+                    } 
+
+        }, 1000);
+        
+    }
+});
+</script>
